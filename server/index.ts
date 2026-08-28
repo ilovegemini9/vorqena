@@ -1,3 +1,7 @@
+/**
+ * Style reminder — Utilitarian Calculation Desk: keep the server minimal,
+ * transparent, and focused on serving the calculator frontend.
+ */
 import express from "express";
 import { createServer } from "http";
 import path from "path";
@@ -6,11 +10,12 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function startServer() {
+async function startServer(): Promise<void> {
   const app = express();
   const server = createServer(app);
 
-  // Serve static files from dist/public in production
+  // In production, the bundled server lives beside the public directory.
+  // During the local build, the frontend is emitted to dist/public.
   const staticPath =
     process.env.NODE_ENV === "production"
       ? path.resolve(__dirname, "public")
@@ -18,16 +23,21 @@ async function startServer() {
 
   app.use(express.static(staticPath));
 
-  // Handle client-side routing - serve index.html for all routes
-  app.get("*", (_req, res) => {
-    res.sendFile(path.join(staticPath, "index.html"));
+  // Send the SPA shell for client-side routes such as /mortgage and /bmi.
+  app.get("*", (_request, response) => {
+    response.sendFile(path.join(staticPath, "index.html"));
   });
 
-  const port = process.env.PORT || 3000;
+  const port = Number.parseInt(process.env.PORT ?? "3000", 10);
+  const listenPort = Number.isFinite(port) && port > 0 ? port : 3000;
 
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+  server.listen(listenPort, () => {
+    console.log(`Server running on http://localhost:${listenPort}/`);
   });
 }
 
-startServer().catch(console.error);
+startServer().catch((error: unknown) => {
+  console.error("Unable to start the calculator server.", error);
+  process.exitCode = 1;
+});
+
