@@ -2,8 +2,8 @@
 
 - [x] Inspecter `server/index.ts` et rétablir une source TypeScript lisible.
 - [x] Exécuter `pnpm check` et `pnpm build`.
-- [ ] Pousser la correction dans `ilovegemini9/calculator.net`.
-- [ ] Vérifier le commit distant et informer l’utilisateur.
+- [x] Pousser la correction dans `ilovegemini9/calculator.net`.
+- [x] Vérifier le commit distant et informer l’utilisateur.
 
 ## Note
 
@@ -15,3 +15,10 @@ Style reminder — Utilitarian Calculation Desk: server behavior stays minimal a
 
 - [x] Phase active: inspecter et rétablir la source TypeScript.
 
+
+## Diagnostic Vercel
+
+- [ ] Vérifier la configuration et le projet Vercel liés à `calculator.net`.
+- [ ] Examiner les logs de build/runtime et identifier la cause réelle.
+- [ ] Appliquer le correctif nécessaire sans confondre l’output bundlé avec la source.
+- [ ] Tester, pousser le correctif et confirmer le déploiement.
