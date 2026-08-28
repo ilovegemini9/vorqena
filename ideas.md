@@ -73,3 +73,7 @@ Mark هندسي أخضر/أبيض كيجمع بين رمز `+` وفتحة شاش
 * صفحات calculators الموسعة تستعمل labels، result names، وmicrocopy مرتبطة بالمهمة نفسها؛ ممنوع استعمال placeholders عامة بحال First value أو Ready فالتجربة النهائية.
 * Calculator Green `#2E8B32` كتدل فقط على action ديال الحساب، result، أو valid/positive outcome؛ ماشي لحالات route أو status.
 * ترتيب homepage كيعطي الأولوية للـ calculator workspace، search، وdirectory؛ أي graphic زخرفي خاصو يعزز motif ديال الأدوات والأزرار.
+
+- صفحات calculators خاصها تحس بحال working reference desk، لذلك related-calculator links ومحتوى عملي مختصر كيجيو تحت form/result بدل فراغ كبير.
+- calculator workspace كيبان بنيوياً بلون blue-gray `#D9E6F2`، والبيض كيبقى للحقول والـ cards الداخلية.
+- Calculator Green `#2E8B32` كتستعمل بشكل flat فـ actions وresult rails الوظيفية، بلا gradients زخرفية.

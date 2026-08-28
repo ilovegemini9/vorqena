@@ -33,7 +33,7 @@ function family(file, category) {
   if (slug.includes("mortgage")) return "mortgage";
   if (slug.includes("bmi")) return "bmi";
   if (slug === "age-calculator") return "age";
-  if (slug.includes("percentage")) return "percentage";
+  if (slug.includes("percentage") || slug.includes("percent")) return "percentage";
   if (slug.includes("tip")) return "tip";
   if (slug.includes("discount")) return "discount";
   if (slug.includes("compound-interest")) return "compound-interest";

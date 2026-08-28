@@ -1155,7 +1155,7 @@ export const calculatorRegistry: CalculatorDefinition[] = [
     "route": "/percent-calculator.html",
     "title": "Percent Calculator",
     "category": "Other",
-    "family": "other",
+    "family": "percentage",
     "description": "Use this percent calculator to work through the inputs and get a clear estimate."
   },
   {
@@ -1163,7 +1163,7 @@ export const calculatorRegistry: CalculatorDefinition[] = [
     "route": "/percent-error-calculator.html",
     "title": "Percent Error Calculator",
     "category": "Other",
-    "family": "other",
+    "family": "percentage",
     "description": "Use this percent error calculator to work through the inputs and get a clear estimate."
   },
   {
@@ -1171,7 +1171,7 @@ export const calculatorRegistry: CalculatorDefinition[] = [
     "route": "/percent-off-calculator.html",
     "title": "Percent Off Calculator",
     "category": "Other",
-    "family": "other",
+    "family": "percentage",
     "description": "Use this percent off calculator to work through the inputs and get a clear estimate."
   },
   {
