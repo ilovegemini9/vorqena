@@ -39,3 +39,18 @@ Style reminder — Utilitarian Calculation Desk: server behavior stays minimal a
 - [x] ربط routes الخاصة وإزالة generic placeholder copy.
 - [x] اختبار الحسابات والروابط وresponsive.
 - [ ] حفظ checkpoint ودفع النسخة الجديدة إلى GitHub.
+
+## Clone verification
+
+- [ ] مقارنة 221 route في inventory مع routes التي يقدّمها التطبيق.
+- [ ] عدّ الصفحات dedicated مقابل generic fallback.
+- [ ] فحص engines والحقول والنتائج والـ backend/hosting assumptions.
+- [ ] فحص live routes وتوثيق verdict والنسبة الحقيقية.
+
+## Full dedicated expansion
+
+- [ ] تقسيم الـ 188 route المتبقية إلى families قابلة لإعادة الاستخدام.
+- [ ] تنفيذ engines للعائلات المالية والصحية والرياضية والزمنية المتبقية.
+- [ ] ربط routes وإزالة generic fallback من كل route يمكن التحقق من حسابه.
+- [ ] اختبار forms وformulas وresults والـ responsive.
+- [ ] تحديث coverage report، حفظ checkpoint، ودفع GitHub.
