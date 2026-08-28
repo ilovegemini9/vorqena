@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import { AgeCalculatorPage, BmiCalculatorPage, MortgageCalculatorPage } from "./pages/CalculatorPages";
+import PublicCalculatorPage from "./pages/PublicCalculatorPage";
 
 
 function Router() {
@@ -16,6 +17,7 @@ function Router() {
       <Route path={"/bmi"} component={BmiCalculatorPage} />
       <Route path={"/age"} component={AgeCalculatorPage} />
       <Route path={"/404"} component={NotFound} />
+      <Route path={"/:slug"} component={PublicCalculatorPage} />
       {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>

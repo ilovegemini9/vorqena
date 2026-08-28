@@ -23,7 +23,7 @@ const categoryLinks = [
   { label: "Other", href: "/age", icon: CalendarDays },
 ];
 
-function CalculatorLayout({ category, title, description, children }: LayoutProps) {
+export function CalculatorLayout({ category, title, description, children }: LayoutProps) {
   return (
     <>
       <header className="tool-header">

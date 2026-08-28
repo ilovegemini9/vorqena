@@ -69,3 +69,7 @@ Mark هندسي أخضر/أبيض كيجمع بين رمز `+` وفتحة شاش
 * كل صفحة calculator خاصها تحتافظ بنفس shell ديال homepage: brand ظاهر، شريط أزرق داكن كعنصر ثقة، sidebar ديال directory، وعمود محتوى عملي.
 * فـ homepage، calculator والبحث ودخول الفئات هما الواجهة الأساسية؛ الheadline كيدعم الاستعمال وما كيتحوّلاش لحملة تسويقية.
 * **Calculator Green `#2E8B32`** محجوزة للأزرار ديال الحساب، result rails، وحالات النتائج الإيجابية؛ ماشي accent زخرفي عام.
+
+* صفحات calculators الموسعة تستعمل labels، result names، وmicrocopy مرتبطة بالمهمة نفسها؛ ممنوع استعمال placeholders عامة بحال First value أو Ready فالتجربة النهائية.
+* Calculator Green `#2E8B32` كتدل فقط على action ديال الحساب، result، أو valid/positive outcome؛ ماشي لحالات route أو status.
+* ترتيب homepage كيعطي الأولوية للـ calculator workspace، search، وdirectory؛ أي graphic زخرفي خاصو يعزز motif ديال الأدوات والأزرار.

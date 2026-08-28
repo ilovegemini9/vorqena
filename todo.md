@@ -22,3 +22,12 @@ Style reminder — Utilitarian Calculation Desk: server behavior stays minimal a
 - [ ] Examiner les logs de build/runtime et identifier la cause réelle.
 - [ ] Appliquer le correctif nécessaire sans confondre l’output bundlé avec la source.
 - [ ] Tester, pousser le correctif et confirmer le déploiement.
+
+## توسعة عامة من Calculator.net
+
+- [ ] حصر sitemap والفئات وكل calculator pages المتاحة علناً.
+- [ ] حفظ قائمة routes والـ forms والـ assets القابلة لإعادة البناء.
+- [ ] تصميم registry موحّد للـ calculators والـ routes.
+- [ ] تنفيذ calculator components ذات الأولوية ثم توسيع directory.
+- [ ] اختبار النتائج، الروابط، responsive، وVercel build.
+- [ ] دفع النسخة الموسعة إلى GitHub.
