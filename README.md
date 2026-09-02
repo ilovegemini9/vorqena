@@ -1,51 +1,43 @@
-# Calculator.net — reconstruction web
+# Vorqena
 
-Ce dépôt contient une **reconstruction frontend indépendante** d’une suite de calculateurs en ligne, préparée à partir de la structure fonctionnelle visible sur [Calculator.net](https://www.calculator.net/). Le projet privilégie une expérience utilitaire : entrées lisibles, résultats immédiats, navigation par catégories et affichage responsive.
+Vorqena is an English-first everyday utility engine built around five user intents:
 
-> Cette reconstruction est indépendante : elle indexe les 221 routes publiques découvertes من sitemap، وتوفر shell موحداً وformula engines للأدوات ذات الأنماط المشتركة. Les sources privées, services backend/API et comportements non exposés publiquement ne sont pas inclus.
+- **Fix** — troubleshoot a problem and find the next practical step.
+- **Calculate** — get a fast answer from numbers.
+- **Decide** — understand whether an action makes sense before doing it.
+- **When** — find dates, deadlines, timing, and schedules.
+- **Cost** — estimate price and compare repair vs. replacement.
 
-## Fonctionnalités disponibles
+The product principle is **answer first, action next**: give the useful result before unnecessary navigation, then provide tools, evidence, related questions, and the next step.
 
-| Route | Outil | Fonctionnalité principale |
-| --- | --- | --- |
-| `/` | Répertoire + calculatrice scientifique | Recherche locale, catégories et calculatrice avec opérations courantes, trigonométrie, mémoire et racines. |
-| `/mortgage` | Mortgage Calculator | Estimation des échéances, taxes, assurance, HOA, intérêts et tableau annuel d’amortissement. |
-| `/bmi` | BMI Calculator | Calcul avec unités US ou métriques, fourchettes standard, BMI Prime et intervalle de poids. |
-| `/age` | Age Calculator | Écart entre date de naissance et date de référence, avec années, mois, semaines, jours et heures. |
-| `/*.html` | Public calculator registry | 221 routes publiques, recherche, catégories et workspace dynamique avec labels liés à chaque outil. |
+## Current foundation
 
-## Stack
+- React 19 + TypeScript + Vite
+- Wouter routing
+- Responsive Vorqena design system
+- Intent-first homepage and `/fix`, `/calculate`, `/decide`, `/when`, `/cost` hubs
+- Existing calculator registry retained as the utility engine behind calculator routes
+- SEO metadata, WebSite structured data, robots.txt, and an initial sitemap
+- Lockfile-compatible pnpm configuration for deterministic Vercel builds
 
-| Élément | Choix |
-| --- | --- |
-| Interface | React 19 + TypeScript |
-| Routage | Wouter |
-| Styles | Tailwind CSS 4 + CSS personnalisé |
-| Icônes | Lucide React |
-| Build | Vite |
-
-## Démarrage local
+## Local development
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Pour vérifier le projet avant une publication :
+Validation:
 
 ```bash
 pnpm check
 pnpm build
 ```
 
-## Étendre la collection
+## Product direction
 
-Le fichier `client/src/lib/calculators.ts` est généré depuis `sitemap.xml` par `node scripts/generate-calc-registry.mjs`. Chaque route publique est disponible dans le directory et reçoit une page dynamique. Les formules nécessitant plusieurs hypothèses doivent ensuite être remplacées par des modules dédiés, en gardant la même enveloppe de navigation, le panneau de résultats et les styles documentés dans `ideas.md`.
+The long-term content architecture is entity-first and source-backed, with original tools and strong internal linking. Initial priority is Problems + Calculators, followed by Costs + Can-I decisions, then dates and schedules. The site is designed for a global English audience, starting with the US and expanding to Canada and Australia.
 
-## Configuration Vercel
+## Deployment
 
-Le fichier `vercel.json` force Vercel à exécuter `pnpm build`, à servir `dist/public` et à réécrire les routes SPA vers `index.html`. Cela évite de servir `dist/index.js` comme page visible.
-
-## Ressources visuelles
-
-Les images de catégories et le symbole de marque utilisent des URL de stockage gérées par le projet. Elles ne doivent pas être déplacées dans `client/public` ou `client/src/assets`.
+The Git repository is `ilovegemini9/vorqena`. Vercel is connected to the `main` branch. The current Vercel project is still named `calculator.net`; the product/UI itself is Vorqena.
