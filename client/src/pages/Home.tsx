@@ -1,5 +1,6 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { ArrowRight, BarChart3, BookOpen, Calculator, CalendarDays, CircleDollarSign, Clock3, FileText, HelpCircle, History, Home as HomeIcon, Menu, Plus, Search, Settings, ShieldCheck, Sparkles, Wrench, XCircle } from "lucide-react";
+import { routeQuestion } from "../data/router";
 
 const intents=[
   ["fix","Fix","Solve problems and get step-by-step guidance.",Wrench,"#57c8ea"],
@@ -29,6 +30,26 @@ const examples=[
 ];
 
 export default function Home(){
+  const [, navigate] = useLocation();
+
+  function handleAsk(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const query = String(form.get("q") || "").trim();
+    if (!query) return;
+
+    const route = routeQuestion(query);
+    if (route.kind === "knowledge" && route.knowledge) {
+      navigate(route.knowledge.slug);
+      return;
+    }
+    if (route.kind === "tool" && route.tool) {
+      navigate(`/tool/${route.tool.slug}`);
+      return;
+    }
+    navigate(`/search?q=${encodeURIComponent(query)}`);
+  }
+
   return <main className="app-shell">
     <aside className="sidebar">
       <Link href="/" className="side-brand"><BarChart3/><span>Vorqena</span></Link>
@@ -59,11 +80,11 @@ export default function Home(){
         <BarChart3 className="hero-mark"/>
         <h1>What can we <span>help you</span> with?</h1>
         <p>Describe a problem, ask a question, or calculate something.</p>
-        <form className="ask-box" action="/search">
+        <form className="ask-box" onSubmit={handleAsk}>
           <Search/>
           <input name="q" placeholder="Ask anything..." aria-label="Ask anything"/>
           <Plus className="ask-plus"/>
-          <button aria-label="Search"><ArrowRight/></button>
+          <button type="submit" aria-label="Search"><ArrowRight/></button>
         </form>
         <div className="query-chips">{examples.map(([label,q])=><Link key={label} href={"/search?q="+encodeURIComponent(q)}>{label}</Link>)}</div>
       </section>
