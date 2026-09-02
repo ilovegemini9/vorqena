@@ -60,8 +60,9 @@ export default function CanonicalPage() {
       {item.warnings?.length ? <section className="warning-section"><h2><ShieldCheck size={20}/> Safety & warnings</h2>{item.warnings.map(x => <p key={x}>{x}</p>)}</section> : null}
       {item.whenToGetHelp?.length ? <section><h2>When to get help</h2><ul>{item.whenToGetHelp.map(x => <li key={x}>{x}</li>)}</ul></section> : null}
       {item.cost?.length ? <section><h2>Cost considerations</h2><ul>{item.cost.map(x => <li key={x}>{x}</li>)}</ul></section> : null}
+      {item.sources.length ? <section><h2>Sources</h2><ul>{item.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer nofollow">{source.label}</a></li>)}</ul></section> : null}
       {item.related.length ? <section className="canonical-related"><span className="eyebrow">Related questions</span><div className="related-grid">{item.related.map(path => <Link key={path} href={path}><span>{path.split("/").pop()?.replace(/-/g, " ")}</span><ArrowRight size={16}/></Link>)}</div></section> : null}
     </article>
-    <footer className="site-footer"><span>Vorqena — Everyday answers, tools & decisions.</span><span>© 2026</span></footer>
+    <footer className="site-footer"><span>Vorqena — Everyday answers, tools & decisions.</span><span><Link href="/about">About</Link> · <Link href="/sources">Sources</Link> · <Link href="/editorial-policy">Editorial policy</Link> · <Link href="/contact">Contact</Link></span><span>© 2026</span></footer>
   </main>;
 }
