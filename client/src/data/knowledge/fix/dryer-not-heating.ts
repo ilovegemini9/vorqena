@@ -12,7 +12,10 @@ export const dryerNotHeating: KnowledgeRecord = {
   warnings: ["Disconnect power before opening panels or servicing internal parts.", "If you smell gas, stop using the dryer and contact the appropriate gas utility or qualified professional."],
   whenToGetHelp: ["The dryer repeatedly overheats or trips a breaker.", "There is a burning smell, damaged wiring, or a gas smell."],
   cost: ["Repair cost varies by dryer type and failed component; get a diagnosis before buying parts."],
-  sources: [],
-  related: ["/fix/phone-not-charging", "/cost/repair-or-replace"],
+  sources: [
+    { label: "Whirlpool Product Help — Dryer is Not Heating", url: "https://producthelp.whirlpool.com/Laundry/Dryers/Product_Info/Dryer_Product_Assistance/Dryer_is_Not_Heating" },
+    { label: "Consumer Reports — Most Common Appliance Problems and Repairs", url: "https://www.consumerreports.org/appliances/most-common-appliance-problems-and-repairs-a5550122416/" },
+  ],
+  related: ["/fix/phone-not-charging", "/decide/repair-or-replace"],
   seo: { indexable: true, title: "Dryer Not Heating: Causes, Checks & Next Steps | Vorqena", description: "Find the common reasons a dryer runs but does not heat, safe checks to try, warnings, and when to call for service." }
 };
