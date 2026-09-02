@@ -11,7 +11,10 @@ export const phoneNotCharging: KnowledgeRecord = {
   steps: ["Try a known-good cable, charger, and outlet.", "Inspect the charging port with a light; do not insert metal objects.", "Restart the phone and try charging again.", "If the issue persists, check the manufacturer's support guidance or seek repair."],
   warnings: ["If the phone or battery is swollen, unusually hot, smoking, or damaged, stop using it and seek professional help."],
   whenToGetHelp: ["The device becomes unusually hot while charging.", "The battery appears swollen or physically damaged."],
-  sources: [],
+  sources: [
+    { label: "Google Android Help — Fix a device that won't charge or turn on", url: "https://support.google.com/android/answer/7662405" },
+    { label: "Google Pixel Help — Fix a Pixel phone that won't charge or turn on", url: "https://support.google.com/pixelphone/answer/7167687" },
+  ],
   related: ["/decide/repair-or-replace", "/cost/electricity-cost"],
   seo: { indexable: true, title: "Phone Won't Charge: Causes & Safe Troubleshooting | Vorqena", description: "Work through safe checks for a phone that will not charge, from the cable and outlet to the charging port and repair." }
 };
