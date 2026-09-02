@@ -4,6 +4,7 @@ import IntentPage from "./pages/IntentPage";
 import SearchPage from "./pages/SearchPage";
 import ToolPage from "./pages/ToolPage";
 import CanonicalPage from "./pages/CanonicalPage";
+import TrustPage from "./pages/TrustPage";
 import NotFound from "./pages/NotFound";
 import "./index.css";
 
@@ -17,6 +18,13 @@ export default function App() {
     <Route path="/decide/:slug" component={CanonicalPage} />
     <Route path="/when/:slug" component={CanonicalPage} />
     <Route path="/cost/:slug" component={CanonicalPage} />
+    <Route path="/about" component={TrustPage} />
+    <Route path="/how-vorqena-works" component={TrustPage} />
+    <Route path="/editorial-policy" component={TrustPage} />
+    <Route path="/sources" component={TrustPage} />
+    <Route path="/contact" component={TrustPage} />
+    <Route path="/privacy" component={TrustPage} />
+    <Route path="/terms" component={TrustPage} />
     <Route path="/fix" component={() => <IntentPage type="fix" />} />
     <Route path="/calculate" component={() => <IntentPage type="calculate" />} />
     <Route path="/decide" component={() => <IntentPage type="decide" />} />
