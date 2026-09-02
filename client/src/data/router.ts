@@ -20,6 +20,15 @@ const intentHints: Record<Intent, string[]> = {
   cost: ["cost", "price", "how much does", "fuel", "electricity", "repair cost"],
 };
 
+const genericSearchTerms = new Set([
+  "search",
+  "tool",
+  "tools",
+  "calculator",
+  "calculators",
+  "calculate",
+]);
+
 function normalize(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
 }
@@ -38,14 +47,16 @@ export function routeQuestion(query: string): QuestionRoute {
   const value = normalize(query);
   if (!value) return { kind: "unknown", confidence: "low" };
 
+  // Generic navigation terms should open search, not silently pick the first calculator/tool.
+  if (genericSearchTerms.has(value)) {
+    return { kind: "unknown", intent: value === "calculate" || value.includes("calculator") ? "calculate" : undefined, confidence: "low" };
+  }
+
   const knowledgeMatches = searchKnowledge(value);
   const topKnowledge = knowledgeMatches[0];
   if (topKnowledge) {
-    const second = knowledgeMatches[1];
-    const clearLead = !second || knowledgeMatches.indexOf(topKnowledge) === 0;
-    const confidence = clearLead && (topKnowledge.aliases.some(a => normalize(a) === value) || normalize(topKnowledge.title) === value)
-      ? "high"
-      : "medium";
+    const exact = topKnowledge.aliases.some(a => normalize(a) === value) || normalize(topKnowledge.title) === value;
+    const confidence = exact ? "high" : "medium";
     return { kind: "knowledge", intent: topKnowledge.intent, knowledge: topKnowledge, confidence };
   }
 
