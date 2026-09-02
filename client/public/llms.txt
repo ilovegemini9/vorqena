@@ -1,0 +1,22 @@
+# Vorqena
+
+> Everyday answers, tools, and decisions.
+
+Vorqena is a general-purpose utility site focused on helping people complete everyday tasks. The product is organized around five intents: Fix, Calculate, Decide, When, and Cost.
+
+## Primary sections
+- https://vorqena.vercel.app/fix — troubleshooting and practical next steps
+- https://vorqena.vercel.app/calculate — calculations and utility tools
+- https://vorqena.vercel.app/decide — conditional guidance and tradeoffs
+- https://vorqena.vercel.app/when — dates, deadlines, and timing
+- https://vorqena.vercel.app/cost — cost estimates and repair-vs-replace decisions
+
+## Site principles
+- Answer first, then reasoning and evidence.
+- State assumptions and limitations clearly.
+- Prefer actionable next steps over generic summaries.
+- Link related questions and tools when they help complete the task.
+- Do not represent Vorqena as a government or medical authority.
+
+## Machine-readable resources
+- Sitemap: https://vorqena.vercel.app/sitemap.xml
