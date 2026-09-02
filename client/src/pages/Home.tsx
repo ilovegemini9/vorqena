@@ -1,43 +1,32 @@
-/**
- * Style reminder — Utilitarian Calculation Desk: asymmetric navy header,
- * compact calculator workspace, dense indexed directory, and direct utility-first navigation.
- */
 import { useMemo, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Calculator, ChevronRight, HeartPulse, Landmark, Menu, Search, Sigma, TimerReset, X } from "lucide-react";
-import ScientificCalculator from "@/components/ScientificCalculator";
-import { calculatorRegistry, type CalculatorCategory } from "@/lib/calculators";
+import { ArrowRight, Calculator, CheckCircle2, Clock3, DollarSign, Search, Wrench } from "lucide-react";
+import { calculatorRegistry } from "@/lib/calculators";
 
-const categoryMeta: { id: string; title: string; category: CalculatorCategory; icon: typeof Landmark; image: string; intro: string }[] = [
-  { id: "financial", title: "Financial Calculators", category: "Financial", icon: Landmark, image: "/manus-storage/calculator-net-finance_5da480d3.jpg", intro: "Payments, interest, loans, taxes and money decisions." },
-  { id: "health", title: "Fitness & Health", category: "Fitness & Health", icon: HeartPulse, image: "/manus-storage/calculator-net-health_5f9d0ebc.jpg", intro: "Everyday measures for movement, nutrition and health." },
-  { id: "math", title: "Math Calculators", category: "Math", icon: Sigma, image: "/manus-storage/calculator-net-math_1a6cc27f.jpg", intro: "Equations, numbers, geometry, statistics and conversions." },
-  { id: "other", title: "Everyday Calculators", category: "Other", icon: TimerReset, image: "/manus-storage/calculator-net-other_5b71dbbc.jpg", intro: "Dates, time, planning and other practical number tools." },
+const intents = [
+  { key: "fix", title: "Fix", text: "Troubleshoot a problem and find the next step.", icon: Wrench },
+  { key: "calculate", title: "Calculate", text: "Get a fast answer from the numbers.", icon: Calculator },
+  { key: "decide", title: "Decide", text: "Find out what you can do before you act.", icon: CheckCircle2 },
+  { key: "when", title: "When", text: "Find dates, deadlines, timing, and schedules.", icon: Clock3 },
+  { key: "cost", title: "Cost", text: "Estimate price and compare repair vs. replace.", icon: DollarSign },
 ];
 
-const categories = categoryMeta.map((meta) => ({ ...meta, links: calculatorRegistry.filter((calculator) => calculator.category === meta.category) }));
-
 export default function Home() {
-  const [search, setSearch] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const results = useMemo(() => calculatorRegistry.filter((calculator) => calculator.title.toLowerCase().includes(search.trim().toLowerCase())), [search]);
+  const [query, setQuery] = useState("");
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return calculatorRegistry.filter((x) => `${x.title} ${x.category}`.toLowerCase().includes(q)).slice(0, 8);
+  }, [query]);
+
   return (
-    <main>
-      <section className="home-hero" id="scientific">
-        <header className="site-header">
-          <Link href="/" className="brand" aria-label="Calculator.net home"><img src="/manus-storage/calculator-net-mark_e5d4b69f.png" alt="" /><span className="wordmark"><b>calculator</b><i>.net</i></span></Link>
-          <nav className={`main-nav ${menuOpen ? "is-open" : ""}`}><a href="#directory" onClick={() => setMenuOpen(false)}>Calculator directory</a><a href="#scientific" onClick={() => setMenuOpen(false)}>Scientific calculator</a><a href="#about" onClick={() => setMenuOpen(false)}>About</a></nav>
-          <button className="menu-button" aria-label="Toggle navigation" onClick={() => setMenuOpen((open) => !open)}>{menuOpen ? <X /> : <Menu />}</button>
-        </header>
-        <div className="hero-workbench content-frame">
-          <div className="hero-calculator"><p className="eyebrow">Quick workspace</p><ScientificCalculator compact /></div>
-          <div className="hero-copy"><p className="eyebrow">Free online calculators</p><h1>Start with a <i>number.</i><br />Leave with an answer.</h1><p>Search a tool or calculate right here. No account, no waiting, no unnecessary steps.</p><div className="search-box"><Search size={19} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search a calculator" aria-label="Search calculators" /><span>{search ? `${results.length} found` : "221 tools"}</span></div>{search && <div className="search-results">{results.length ? results.slice(0, 8).map((result) => <Link key={result.slug} href={result.route}><span>{result.title}<small>{result.category}</small></span><ArrowRight size={15} /></Link>) : <p>No matching calculator in the public index.</p>}</div>}<div className="hero-shortcuts"><Link href="/mortgage-calculator.html">Mortgage</Link><Link href="/bmi-calculator.html">BMI</Link><Link href="/age-calculator.html">Age</Link><a href="#directory">All categories</a></div></div>
-        </div>
-      </section>
-      <section className="directory-section content-frame" id="directory"><div className="directory-heading"><div><p className="eyebrow">Calculator directory</p><h2>Pick a category, then get to the number.</h2></div><span>Direct links to the practical tools people use most.</span></div><div className="category-river">{categories.map((category, index) => { const Icon = category.icon; return <article className="category-card" key={category.id} id={category.id}><div className="category-card-top"><div className="category-image"><img src={category.image} alt="" /></div><div className="category-order">{String(index + 1).padStart(2, "0")}</div></div><div className="category-name"><Icon size={18} /><h3>{category.title}</h3></div><p>{category.intro}</p><ul>{category.links.slice(0, 8).map((link) => <li key={link.slug}><Link href={link.route}>{link.title}<ChevronRight size={15} /></Link></li>)}</ul></article>; })}</div><a href="#all-tools" className="all-tools-button"><Calculator size={18} />Browse all {calculatorRegistry.length} calculators<ArrowRight size={17} /></a></section>
-      <section className="all-tools-index content-frame" id="all-tools"><div className="directory-heading"><div><p className="eyebrow">Full public index</p><h2>Every route, one practical starting point.</h2></div><span>{calculatorRegistry.length} indexed pages from the public sitemap.</span></div><div className="all-tools-grid">{categories.map((category) => <section key={category.id}><div className="all-tools-heading"><category.icon size={17} /><h3>{category.title}</h3><span>{category.links.length}</span></div><div className="all-tools-links">{category.links.map((link) => <Link key={link.slug} href={link.route}>{link.title}<ChevronRight size={13} /></Link>)}</div></section>)}</div></section>
-      <section className="proof-section"><div className="content-frame proof-grid"><div><p className="eyebrow">Built for ordinary decisions</p><h2>A calculation should be the easiest part of the task.</h2></div><div className="proof-copy"><p>This reconstruction follows the public calculator directory and extends it into a searchable route index with shared form patterns.</p><p>Dedicated calculators can be layered onto the same responsive shell without changing the way people browse or find a tool.</p></div></div></section>
-      <footer id="about" className="site-footer"><div className="content-frame footer-grid"><div><Link href="/" className="brand"><img src="/manus-storage/calculator-net-mark_e5d4b69f.png" alt="" /><span className="wordmark"><b>calculator</b><i>.net</i></span></Link><p>Useful calculations, made direct.</p></div><div><strong>Explore</strong><a href="#directory">Calculator directory</a><a href="#all-tools">Full public index</a><Link href="/mortgage-calculator.html">Financial tools</Link></div><div><strong>Popular</strong><Link href="/mortgage-calculator.html">Mortgage Calculator</Link><Link href="/bmi-calculator.html">BMI Calculator</Link><Link href="/age-calculator.html">Age Calculator</Link></div></div><div className="content-frame footer-bottom"><span>© 2026 Calculator.net — reconstructed application.</span><span>Fast. Practical. Free.</span></div></footer>
+    <main className="site-shell">
+      <header className="topbar"><Link href="/" className="brand-vorqena" aria-label="Vorqena home">vorqena</Link><nav>{intents.map((item) => <Link key={item.key} href={`/${item.key}`}>{item.title}</Link>)}</nav><a className="header-tools" href="#tools">Tools</a></header>
+      <section className="hero"><div className="hero-inner"><div className="hero-kicker">Everyday utility engine</div><h1>What can we help you <em>figure out?</em></h1><p className="hero-lead">Answers, calculators, practical guides, and decisions — built around the task you need to finish.</p><div className="hero-search-wrap"><div className="hero-search"><Search size={21}/><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ask a question or search a tool" aria-label="Search Vorqena"/><kbd>⌘ K</kbd></div>{results.length > 0 && <div className="search-dropdown">{results.map((result) => <Link key={result.slug} href={result.route}><span>{result.title}<small>{result.category}</small></span><ArrowRight size={16}/></Link>)}</div>}</div><div className="hero-note"><span>Free to use</span><span>No account required</span><span>Sources where they matter</span></div></div></section>
+      <section className="intent-section"><div className="section-intro"><span className="section-label">Start with the job</span><h2>Five ways to get unstuck.</h2><p>Most questions are really asking for one of five things. Pick the outcome, then go straight to the useful part.</p></div><div className="intent-grid-home">{intents.map((item, index) => { const Icon = item.icon; return <Link className="intent-card" key={item.key} href={`/${item.key}`}><span className="intent-number">0{index + 1}</span><Icon size={21}/><h3>{item.title}</h3><p>{item.text}</p><span className="intent-arrow"><ArrowRight size={17}/></span></Link>; })}</div></section>
+      <section className="answer-section"><div className="answer-panel"><div><span className="section-label">Answer-first</span><h2>Less searching. More solving.</h2><p>Vorqena puts the useful answer, calculation, or next action before the noise. Supporting detail stays available when you need it.</p></div><div className="answer-points"><div><b>01</b><span><strong>Clear answer</strong>Know what the result means.</span></div><div><b>02</b><span><strong>Useful tool</strong>Calculate or check it yourself.</span></div><div><b>03</b><span><strong>Next action</strong>Keep moving without starting over.</span></div></div></div></section>
+      <section className="tools-section" id="tools"><div className="section-intro compact"><span className="section-label">Utility library</span><h2>Tools that do the work.</h2><p>Start with the most useful calculators, then explore the full library.</p></div><div className="tool-feature-grid"><Link href="/mortgage-calculator.html" className="tool-feature"><span>Financial</span><h3>Mortgage Calculator</h3><p>Estimate payments, interest, and loan cost.</p><ArrowRight/></Link><Link href="/bmi-calculator.html" className="tool-feature"><span>Health</span><h3>BMI Calculator</h3><p>Calculate BMI and understand the result.</p><ArrowRight/></Link><Link href="/age-calculator.html" className="tool-feature"><span>Dates</span><h3>Age Calculator</h3><p>Find exact age and time between dates.</p><ArrowRight/></Link></div><div className="library-line"><span>{calculatorRegistry.length}+ indexed utility pages</span><a href="#tools">Browse the library <ArrowRight size={15}/></a></div></section>
+      <footer className="footer"><div><span className="brand-vorqena">vorqena</span><p>Everyday answers, tools, and decisions.</p></div><div className="footer-links">{intents.map((item) => <Link key={item.key} href={`/${item.key}`}>{item.title}</Link>)}</div><div className="footer-bottom"><span>© 2026 Vorqena</span><span>Built for useful answers.</span></div></footer>
     </main>
   );
 }
