@@ -3,19 +3,5 @@
   "framework": "vite",
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm build",
-  "outputDirectory": "dist/public",
-  "rewrites": [
-    { "source": "/search", "destination": "/index.html" },
-    { "source": "/tool/:slug", "destination": "/index.html" },
-    { "source": "/fix", "destination": "/index.html" },
-    { "source": "/fix/:slug", "destination": "/index.html" },
-    { "source": "/calculate", "destination": "/index.html" },
-    { "source": "/calculate/:slug", "destination": "/index.html" },
-    { "source": "/decide", "destination": "/index.html" },
-    { "source": "/decide/:slug", "destination": "/index.html" },
-    { "source": "/when", "destination": "/index.html" },
-    { "source": "/when/:slug", "destination": "/index.html" },
-    { "source": "/cost", "destination": "/index.html" },
-    { "source": "/cost/:slug", "destination": "/index.html" }
-  ]
+  "outputDirectory": "dist/public"
 }
