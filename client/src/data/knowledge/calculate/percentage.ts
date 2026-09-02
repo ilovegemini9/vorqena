@@ -10,6 +10,6 @@ export const percentage: KnowledgeRecord = {
   factors: ["Original value", "New or target value", "Percentage rate", "Whether the question asks for a percentage of a value or percentage change"],
   steps: ["Choose the percentage operation you need.", "Enter the relevant values.", "Review the result and the operation used."],
   sources: [],
-  related: ["/calculate/tip-calculator", "/calculate/break-even"],
+  related: [],
   seo: { indexable: true, title: "Percentage Calculator: Percent, Increase & Change | Vorqena", description: "Calculate percentages, percentage change, increases, and decreases with clear inputs and formulas." }
 };
