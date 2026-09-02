@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Search } from "lucide-react";
 import { searchTools } from "../data/vorqena";
+import { searchKnowledge } from "../data/knowledge";
 
 const intentSuggestions = [
   { label: "Fix a problem", href: "/fix", example: "phone not charging" },
@@ -13,7 +14,13 @@ const intentSuggestions = [
 export default function SearchPage() {
   const [location] = useLocation();
   const query = new URLSearchParams(location.split("?")[1] || "").get("q") || "";
-  const results = searchTools(query);
+  const knowledgeResults = searchKnowledge(query);
+  const toolResults = searchTools(query);
+  const seen = new Set(knowledgeResults.map(item => item.id));
+  const results = [
+    ...knowledgeResults.map(item => ({ kind: "answer" as const, slug: item.slug, title: item.title, description: item.answer, intent: item.intent })),
+    ...toolResults.filter(tool => !seen.has(tool.slug)).map(tool => ({ kind: "tool" as const, slug: `/tool/${tool.slug}`, title: tool.title, description: tool.description, intent: tool.intent })),
+  ];
 
   return (
     <main className="page-shell">
@@ -34,9 +41,9 @@ export default function SearchPage() {
 
         {results.length > 0 ? (
           <div className="results-list">
-            {results.map(tool => (
-              <Link className="result-card" key={tool.slug} href={`/tool/${tool.slug}`}>
-                <div><span className="result-intent">{tool.intent}</span><h2>{tool.title}</h2><p>{tool.description}</p></div>
+            {results.map(result => (
+              <Link className="result-card" key={`${result.kind}-${result.slug}`} href={result.slug}>
+                <div><span className="result-intent">{result.kind === "answer" ? "answer" : result.intent}</span><h2>{result.title}</h2><p>{result.description}</p></div>
                 <ArrowRight />
               </Link>
             ))}
@@ -45,23 +52,15 @@ export default function SearchPage() {
           <div className="search-no-match">
             <div className="empty-state">
               <span className="result-intent">No exact match</span>
-              <h2>{query ? `We couldn't find a tool for “${query}” yet.` : "Start with a question."}</h2>
+              <h2>{query ? `We couldn't find a tool or canonical answer for “${query}” yet.` : "Start with a question."}</h2>
               <p>Try describing what you need in plain English. Vorqena works best with a problem, calculation, decision, date, or cost question.</p>
             </div>
-
             <div className="search-suggestions">
-              {intentSuggestions.map(item => (
-                <Link className="suggestion-card" key={item.href} href={`${item.href}`}>
-                  <strong>{item.label}</strong>
-                  <span>Try “{item.example}”</span>
-                  <ArrowRight size={16}/>
-                </Link>
-              ))}
+              {intentSuggestions.map(item => <Link className="suggestion-card" key={item.href} href={item.href}><strong>{item.label}</strong><span>Try “{item.example}”</span><ArrowRight size={16}/></Link>)}
             </div>
           </div>
         )}
       </section>
-
       <footer className="site-footer"><span>Vorqena — Everyday answers, tools & decisions.</span><span>© 2026</span></footer>
     </main>
   );
