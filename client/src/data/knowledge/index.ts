@@ -1,18 +1,46 @@
 import type { Intent, KnowledgeRecord } from "./types";
 import { dryerNotHeating } from "./fix/dryer-not-heating";
 import { phoneNotCharging } from "./fix/phone-not-charging";
+import { wifiNotWorking } from "./fix/wifi-not-working";
+import { laptopWontTurnOn } from "./fix/laptop-wont-turn-on";
+import { washingMachineNotDraining } from "./fix/washing-machine-not-draining";
+import { carWontStart } from "./fix/car-wont-start";
 import { fuelCost } from "./cost/fuel-cost";
+import { electricityCost } from "./cost/electricity-cost";
+import { carTripCost } from "./cost/car-trip-cost";
+import { movingCost } from "./cost/moving-cost";
 import { repairOrReplace } from "./decide/repair-or-replace";
+import { repairOrReplacePhone } from "./decide/repair-or-replace-phone";
+import { rentOrBuy } from "./decide/rent-or-buy";
 import { percentage } from "./calculate/percentage";
+import { salesTax } from "./calculate/sales-tax";
+import { average } from "./calculate/average";
+import { unitPrice } from "./calculate/unit-price";
+import { changeCarOil } from "./when/change-car-oil";
+import { replaceAirFilter } from "./when/replace-air-filter";
 
 export type { Intent, KnowledgeRecord, Source } from "./types";
 
 export const knowledge: KnowledgeRecord[] = [
   dryerNotHeating,
   phoneNotCharging,
+  wifiNotWorking,
+  laptopWontTurnOn,
+  washingMachineNotDraining,
+  carWontStart,
   fuelCost,
+  electricityCost,
+  carTripCost,
+  movingCost,
   repairOrReplace,
+  repairOrReplacePhone,
+  rentOrBuy,
   percentage,
+  salesTax,
+  average,
+  unitPrice,
+  changeCarOil,
+  replaceAirFilter,
 ];
 
 export function getKnowledge(idOrSlug: string) {
