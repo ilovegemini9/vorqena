@@ -24,7 +24,7 @@ function readRoute(route: string) {
 }
 
 function meta(html: string, name: string) {
-  const match = html.match(new RegExp(`<meta\\s+name=["']${name}["']\\s+content=["']([^"']*)`, "i"));
+  const match = html.match(new RegExp(`<meta[^>]*name=["']${name}["'][^>]*content=["']([^"']*)`, "i"));
   return match?.[1] ?? "";
 }
 
@@ -33,7 +33,8 @@ function title(html: string) {
 }
 
 function canonical(html: string) {
-  return html.match(/<link\\s+rel=["']canonical["']\\s+href=["']([^"']*)/i)?.[1] ?? "";
+  const match = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']*)/i);
+  return match?.[1] ?? "";
 }
 
 const titles = new Map<string, string>();
@@ -70,17 +71,22 @@ function duplicates(map: Map<string, string>, label: string) {
 duplicates(titles, "title");
 duplicates(descriptions, "description");
 
+const duplicateToolToKnowledge: Record<string, string> = {
+  "percentage-calculator": "/calculate/percentage",
+  "fuel-cost": "/cost/fuel-cost",
+  "phone-not-charging": "/fix/phone-not-charging",
+  "dryer-not-heating": "/fix/dryer-not-heating",
+  "repair-or-replace": "/decide/repair-or-replace",
+};
+
 for (const tool of tools) {
   const route = routeOf(`/tool/${tool.slug}`);
   const html = readRoute(route);
   if (!html) continue;
-  const isDuplicate = ["percentage-calculator", "fuel-cost", "phone-not-charging", "dryer-not-heating", "repair-or-replace"].includes(tool.slug);
+  const duplicate = duplicateToolToKnowledge[tool.slug];
   const robots = meta(html, "robots");
-  if (isDuplicate && !robots.startsWith("noindex")) fail(`${route}: duplicate tool must be noindex`);
-  if (isDuplicate) {
-    const expected = tool.slug === "percentage-calculator" ? "/calculate/percentage" : tool.slug === "fuel-cost" ? "/cost/fuel-cost" : tool.slug === "phone-not-charging" ? "/fix/phone-not-charging" : tool.slug === "dryer-not-heating" ? "/fix/dryer-not-heating" : "/decide/repair-or-replace";
-    if (canonical(html) !== `${SITE}${expected}`) fail(`${route}: duplicate tool canonical is ${canonical(html)}, expected ${SITE}${expected}`);
-  }
+  if (duplicate && !robots.startsWith("noindex")) fail(`${route}: duplicate tool must be noindex`);
+  if (duplicate && canonical(html) !== `${SITE}${duplicate}`) fail(`${route}: duplicate tool canonical is ${canonical(html)}, expected ${SITE}${duplicate}`);
 }
 
 const sitemapPath = path.join(DIST, "sitemap.xml");
