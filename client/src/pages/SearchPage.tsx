@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Search } from "lucide-react";
 import { searchTools } from "../data/vorqena";
@@ -14,6 +15,12 @@ const intentSuggestions = [
 export default function SearchPage() {
   const [location, navigate] = useLocation();
   const query = new URLSearchParams(location.includes("?") ? location.slice(location.indexOf("?") + 1) : "").get("q") || "";
+  const [inputValue, setInputValue] = useState(query);
+
+  useEffect(() => {
+    setInputValue(query);
+  }, [query]);
+
   const knowledgeResults = searchKnowledge(query);
   const toolResults = searchTools(query);
   const seen = new Set(knowledgeResults.map(item => item.slug.replace(/^\//, "")));
@@ -24,11 +31,16 @@ export default function SearchPage() {
       .map(tool => ({ kind: "tool" as const, slug: `/tool/${tool.slug}`, title: tool.title, description: tool.description, intent: tool.intent })),
   ];
 
-  function handleSearch(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const nextQuery = String(form.get("q") || "").trim();
+  function runSearch() {
+    const nextQuery = inputValue.trim();
     navigate(nextQuery ? `/search?q=${encodeURIComponent(nextQuery)}` : "/search");
+  }
+
+  function handleSearchKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      runSearch();
+    }
   }
 
   return (
@@ -42,11 +54,19 @@ export default function SearchPage() {
       <section className="search-page">
         <span className="eyebrow">Vorqena search</span>
         <h1>{query ? `Results for “${query}”` : "What do you need to solve?"}</h1>
-        <form className="search-box large" onSubmit={handleSearch}>
+        <div className="search-box large">
           <Search size={21}/>
-          <input name="q" defaultValue={query} autoFocus placeholder="Ask a question or find a tool…" aria-label="Search Vorqena" />
-          <button type="submit">Search</button>
-        </form>
+          <input
+            name="q"
+            value={inputValue}
+            onChange={event => setInputValue(event.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            autoFocus
+            placeholder="Ask a question or find a tool…"
+            aria-label="Search Vorqena"
+          />
+          <button type="button" onClick={runSearch}>Search</button>
+        </div>
 
         {results.length > 0 ? (
           <div className="results-list">
