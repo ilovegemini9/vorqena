@@ -11,6 +11,7 @@ if (!fs.existsSync(DIST)) throw new Error("dist/public does not exist. Run the V
 const errors: string[] = [];
 const warn = (message: string) => console.warn(`SEO WARN: ${message}`);
 const fail = (message: string) => errors.push(message);
+const routeOf = (slug: string) => (slug.startsWith("/") ? slug : `/${slug}`);
 
 function readRoute(route: string) {
   const clean = route.replace(/^\//, "");
@@ -37,7 +38,7 @@ function canonical(html: string) {
 
 const titles = new Map<string, string>();
 const descriptions = new Map<string, string>();
-const indexableRoutes: string[] = ["/", "/fix", "/calculate", "/decide", "/when", "/cost", ...knowledge.filter(k => k.seo.indexable).map(k => `/${k.slug}`)];
+const indexableRoutes: string[] = ["/", "/fix", "/calculate", "/decide", "/when", "/cost", ...knowledge.filter(k => k.seo.indexable).map(k => routeOf(k.slug))];
 
 for (const route of indexableRoutes) {
   const html = readRoute(route);
@@ -49,7 +50,7 @@ for (const route of indexableRoutes) {
   if (!d) fail(`${route}: missing meta description`);
   if (!c) fail(`${route}: missing canonical`);
   else if (c !== `${SITE}${route}`) fail(`${route}: canonical is ${c}, expected ${SITE}${route}`);
-  if (!html.includes('<main')) fail(`${route}: missing semantic main content`);
+  if (!html.includes("<main")) fail(`${route}: missing semantic main content`);
   if (t) titles.set(route, t);
   if (d) descriptions.set(route, d);
 }
@@ -70,7 +71,7 @@ duplicates(titles, "title");
 duplicates(descriptions, "description");
 
 for (const tool of tools) {
-  const route = `/tool/${tool.slug}`;
+  const route = routeOf(`/tool/${tool.slug}`);
   const html = readRoute(route);
   if (!html) continue;
   const isDuplicate = ["percentage-calculator", "fuel-cost", "phone-not-charging", "dryer-not-heating", "repair-or-replace"].includes(tool.slug);
@@ -95,14 +96,14 @@ else {
 for (const item of knowledge.filter(k => k.seo.indexable)) {
   if (!item.sources.length) warn(`${item.slug}: no sources attached`);
   for (const related of item.related) {
-    const href = related.startsWith("/") ? related : `/${related}`;
+    const href = routeOf(related);
     const target = path.join(DIST, href.replace(/^\//, ""), "index.html");
     if (!fs.existsSync(target)) fail(`${item.slug}: broken related route ${href}`);
   }
 }
 
 if (errors.length) {
-  console.error(`\\nSEO validation failed with ${errors.length} error(s):`);
+  console.error(`\nSEO validation failed with ${errors.length} error(s):`);
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
