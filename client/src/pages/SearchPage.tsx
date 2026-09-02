@@ -12,15 +12,24 @@ const intentSuggestions = [
 ];
 
 export default function SearchPage() {
-  const [location] = useLocation();
-  const query = new URLSearchParams(location.split("?")[1] || "").get("q") || "";
+  const [location, navigate] = useLocation();
+  const query = new URLSearchParams(location.includes("?") ? location.slice(location.indexOf("?") + 1) : "").get("q") || "";
   const knowledgeResults = searchKnowledge(query);
   const toolResults = searchTools(query);
-  const seen = new Set(knowledgeResults.map(item => item.id));
+  const seen = new Set(knowledgeResults.map(item => item.slug.replace(/^\//, "")));
   const results = [
     ...knowledgeResults.map(item => ({ kind: "answer" as const, slug: item.slug, title: item.title, description: item.answer, intent: item.intent })),
-    ...toolResults.filter(tool => !seen.has(tool.slug)).map(tool => ({ kind: "tool" as const, slug: `/tool/${tool.slug}`, title: tool.title, description: tool.description, intent: tool.intent })),
+    ...toolResults
+      .filter(tool => !seen.has(tool.slug.replace(/^\//, "")))
+      .map(tool => ({ kind: "tool" as const, slug: `/tool/${tool.slug}`, title: tool.title, description: tool.description, intent: tool.intent })),
   ];
+
+  function handleSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const nextQuery = String(form.get("q") || "").trim();
+    navigate(nextQuery ? `/search?q=${encodeURIComponent(nextQuery)}` : "/search");
+  }
 
   return (
     <main className="page-shell">
@@ -33,10 +42,10 @@ export default function SearchPage() {
       <section className="search-page">
         <span className="eyebrow">Vorqena search</span>
         <h1>{query ? `Results for “${query}”` : "What do you need to solve?"}</h1>
-        <form className="search-box large" action="/search">
+        <form className="search-box large" onSubmit={handleSearch}>
           <Search size={21}/>
           <input name="q" defaultValue={query} autoFocus placeholder="Ask a question or find a tool…" aria-label="Search Vorqena" />
-          <button>Search</button>
+          <button type="submit">Search</button>
         </form>
 
         {results.length > 0 ? (
