@@ -1,96 +1,150 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Search } from "lucide-react";
-import { searchTools } from "../data/vorqena";
 import { searchKnowledge } from "../data/knowledge";
+import { searchTools } from "../data/vorqena";
+import "./SearchPage.css";
 
-const intentSuggestions = [
-  { label: "Fix a problem", href: "/fix", example: "phone not charging" },
-  { label: "Calculate something", href: "/calculate", example: "20% of 450" },
-  { label: "Make a decision", href: "/decide", example: "can I freeze cooked chicken" },
-  { label: "Find a date", href: "/when", example: "days between two dates" },
-  { label: "Estimate a cost", href: "/cost", example: "how much will fuel cost" },
+const suggestions = [
+  { label: "Fix a problem", query: "phone not charging" },
+  { label: "Calculate something", query: "20% of 450" },
+  { label: "Make a decision", query: "repair or replace" },
+  { label: "Find a date", query: "days between dates" },
+  { label: "Estimate a cost", query: "fuel cost" },
 ];
+
+function readQuery(location: string) {
+  const questionMark = location.indexOf("?");
+  if (questionMark === -1) return "";
+  return new URLSearchParams(location.slice(questionMark + 1)).get("q")?.trim() || "";
+}
 
 export default function SearchPage() {
   const [location, navigate] = useLocation();
-  const query = new URLSearchParams(location.includes("?") ? location.slice(location.indexOf("?") + 1) : "").get("q") || "";
-  const [inputValue, setInputValue] = useState(query);
+  const query = readQuery(location);
+  const [value, setValue] = useState(query);
 
-  useEffect(() => {
-    setInputValue(query);
+  const results = useMemo(() => {
+    if (!query) return [];
+
+    const answers = searchKnowledge(query).map(item => ({
+      key: `answer:${item.slug}`,
+      kind: "answer" as const,
+      href: item.slug,
+      title: item.title,
+      description: item.answer,
+      intent: item.intent,
+    }));
+
+    const answerSlugs = new Set(answers.map(item => item.href.replace(/^\//, "")));
+    const tools = searchTools(query)
+      .filter(item => !answerSlugs.has(`/tool/${item.slug}`.replace(/^\//, "")))
+      .map(item => ({
+        key: `tool:${item.slug}`,
+        kind: "tool" as const,
+        href: `/tool/${item.slug}`,
+        title: item.title,
+        description: item.description,
+        intent: item.intent,
+      }));
+
+    return [...answers, ...tools];
   }, [query]);
 
-  const knowledgeResults = searchKnowledge(query);
-  const toolResults = searchTools(query);
-  const seen = new Set(knowledgeResults.map(item => item.slug.replace(/^\//, "")));
-  const results = [
-    ...knowledgeResults.map(item => ({ kind: "answer" as const, slug: item.slug, title: item.title, description: item.answer, intent: item.intent })),
-    ...toolResults
-      .filter(tool => !seen.has(tool.slug.replace(/^\//, "")))
-      .map(tool => ({ kind: "tool" as const, slug: `/tool/${tool.slug}`, title: tool.title, description: tool.description, intent: tool.intent })),
-  ];
-
-  function runSearch() {
-    const nextQuery = inputValue.trim();
-    navigate(nextQuery ? `/search?q=${encodeURIComponent(nextQuery)}` : "/search");
-  }
-
-  function handleSearchKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      runSearch();
-    }
+  function submitSearch() {
+    const next = value.trim();
+    navigate(next ? `/search?q=${encodeURIComponent(next)}` : "/search");
   }
 
   return (
-    <main className="page-shell">
-      <header className="site-header">
-        <Link href="/" className="brand"><span className="brand-mark">V</span><span>Vorqena</span></Link>
-        <nav className="desktop-nav"><Link href="/fix">Fix</Link><Link href="/calculate">Calculate</Link><Link href="/decide">Decide</Link><Link href="/when">When</Link><Link href="/cost">Cost</Link></nav>
-        <Link href="/" className="header-cta">Home <ArrowRight size={15}/></Link>
+    <main className="search-v2">
+      <header className="search-v2-header">
+        <Link href="/" className="search-v2-brand">
+          <span className="search-v2-mark">V</span>
+          <span>Vorqena</span>
+        </Link>
+        <nav>
+          <Link href="/fix">Fix</Link>
+          <Link href="/calculate">Calculate</Link>
+          <Link href="/decide">Decide</Link>
+          <Link href="/when">When</Link>
+          <Link href="/cost">Cost</Link>
+        </nav>
+        <Link href="/" className="search-v2-home">Home <ArrowRight size={15} /></Link>
       </header>
 
-      <section className="search-page">
-        <span className="eyebrow">Vorqena search</span>
-        <h1>{query ? `Results for “${query}”` : "What do you need to solve?"}</h1>
-        <div className="search-box large">
-          <Search size={21}/>
-          <input
-            name="q"
-            value={inputValue}
-            onChange={event => setInputValue(event.target.value)}
-            onKeyDown={handleSearchKeyDown}
-            autoFocus
-            placeholder="Ask a question or find a tool…"
-            aria-label="Search Vorqena"
-          />
-          <button type="button" onClick={runSearch}>Search</button>
+      <section className="search-v2-main">
+        <div className="search-v2-intro">
+          <span className="search-v2-eyebrow">Vorqena search</span>
+          <h1>{query ? `Results for “${query}”` : "What do you need to solve?"}</h1>
+          <p>Ask in plain English. Find a direct answer or the right tool.</p>
         </div>
 
-        {results.length > 0 ? (
-          <div className="results-list">
+        <div className="search-v2-box">
+          <Search size={21} aria-hidden="true" />
+          <input
+            value={value}
+            onChange={event => setValue(event.target.value)}
+            onKeyDown={event => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                submitSearch();
+              }
+            }}
+            placeholder="Ask a question or find a tool…"
+            aria-label="Search Vorqena"
+            autoFocus
+          />
+          <button type="button" onClick={submitSearch}>Search</button>
+        </div>
+
+        {query && results.length > 0 && (
+          <section className="search-v2-results" aria-label="Search results">
             {results.map(result => (
-              <Link className="result-card" key={`${result.kind}-${result.slug}`} href={result.slug}>
-                <div><span className="result-intent">{result.kind === "answer" ? "answer" : result.intent}</span><h2>{result.title}</h2><p>{result.description}</p></div>
-                <ArrowRight />
+              <Link key={result.key} href={result.href} className="search-v2-result">
+                <div className="search-v2-result-copy">
+                  <span className="search-v2-tag">{result.kind === "answer" ? "answer" : result.intent}</span>
+                  <h2>{result.title}</h2>
+                  <p>{result.description}</p>
+                </div>
+                <ArrowRight className="search-v2-result-arrow" size={20} aria-hidden="true" />
               </Link>
             ))}
-          </div>
-        ) : (
-          <div className="search-no-match">
-            <div className="empty-state">
-              <span className="result-intent">No exact match</span>
-              <h2>{query ? `We couldn't find a tool or canonical answer for “${query}” yet.` : "Start with a question."}</h2>
-              <p>Try describing what you need in plain English. Vorqena works best with a problem, calculation, decision, date, or cost question.</p>
-            </div>
-            <div className="search-suggestions">
-              {intentSuggestions.map(item => <Link className="suggestion-card" key={item.href} href={item.href}><strong>{item.label}</strong><span>Try “{item.example}”</span><ArrowRight size={16}/></Link>)}
-            </div>
-          </div>
+          </section>
+        )}
+
+        {query && results.length === 0 && (
+          <section className="search-v2-empty">
+            <span className="search-v2-tag">No exact match</span>
+            <h2>We don't have a direct result for “{query}” yet.</h2>
+            <p>Try a more specific problem, calculation, decision, date, or cost question.</p>
+          </section>
+        )}
+
+        {!query && (
+          <section className="search-v2-suggestions" aria-label="Search examples">
+            {suggestions.map(item => (
+              <button
+                key={item.query}
+                type="button"
+                onClick={() => {
+                  setValue(item.query);
+                  navigate(`/search?q=${encodeURIComponent(item.query)}`);
+                }}
+              >
+                <span>{item.label}</span>
+                <strong>{item.query}</strong>
+                <ArrowRight size={16} aria-hidden="true" />
+              </button>
+            ))}
+          </section>
         )}
       </section>
-      <footer className="site-footer"><span>Vorqena — Everyday answers, tools & decisions.</span><span>© 2026</span></footer>
+
+      <footer className="search-v2-footer">
+        <span>Vorqena — Everyday answers, tools & decisions.</span>
+        <span>© 2026</span>
+      </footer>
     </main>
   );
 }
