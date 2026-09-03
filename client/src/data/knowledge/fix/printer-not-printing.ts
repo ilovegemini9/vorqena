@@ -39,7 +39,7 @@ export const printerNotPrinting: KnowledgeRecord = {
     "Whether the connection is USB or network-based",
   ],
   sources: [
-    { label: "Microsoft Support — Fix printer connection and printing problems in Windows", url: "https://support.microsoft.com/windows/fix-printer-connection-and-printing-problems-in-windows-9d6b3c5f-7f5b-4b9d-a3f6-4b5b4f2f5a5f" },
+    { label: "Microsoft Support — Fix printer connection and printing problems in Windows", url: "https://support.microsoft.com/en-US/Windows/Hardware/Printer/fix-printer-connection-and-printing-problems-in-windows" },
     { label: "Apple Support — Solve printing problems on Mac", url: "https://support.apple.com/guide/mac-help/solve-printing-problems-mh1401/mac" },
   ],
   related: ["/fix/wifi-not-working", "/fix/laptop-wont-turn-on"],
