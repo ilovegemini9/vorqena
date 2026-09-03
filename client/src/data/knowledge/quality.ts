@@ -47,7 +47,7 @@ export function qualityIssues(item: KnowledgeRecord): QualityIssue[] {
   if (!item.id.trim()) add("id", "must not be empty");
   if (!item.title.trim()) add("title", "must not be empty");
   if (!item.slug.startsWith(`/${item.intent}/`)) add("slug", `must start with /${item.intent}/`);
-  if (item.slug.endsWith("/") || /\\s/.test(item.slug)) add("slug", "must not end with / or contain whitespace");
+  if (item.slug.endsWith("/") || /\s/.test(item.slug)) add("slug", "must not end with / or contain whitespace");
 
   if (wordCount(item.answer) < MIN_ANSWER_WORDS) add("answer", `needs at least ${MIN_ANSWER_WORDS} words`);
   if (nonEmpty(item.aliases).length < MIN_ALIASES) add("aliases", `needs at least ${MIN_ALIASES} useful aliases`);
@@ -83,8 +83,6 @@ export function qualityIssues(item: KnowledgeRecord): QualityIssue[] {
 export function qualityGate(records: KnowledgeRecord[]) {
   const issues = records.flatMap(qualityIssues);
   const indexable = records.filter(item => item.seo.indexable);
-
-  const by = (value: string) => indexable.filter(item => value(item).trim()).map(item => [value(item).trim().toLowerCase(), item] as const);
   const duplicateGroups = new Map<string, string[]>();
   const addDuplicateGroup = (kind: string, value: string, id: string) => {
     const key = `${kind}:${value}`;
