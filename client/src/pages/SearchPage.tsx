@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Search } from "lucide-react";
 import { searchKnowledge } from "../data/knowledge";
@@ -53,16 +53,15 @@ export default function SearchPage() {
     return [...answers, ...tools];
   }, [query]);
 
+  useEffect(() => {
+    if (!query) return;
+    const route = routeQuestion(query);
+    if (route.kind === "unknown") upsertCandidate(query, route);
+  }, [query]);
+
   function submitSearch() {
     const next = value.trim();
-    if (!next) {
-      navigate("/search");
-      return;
-    }
-
-    const route = routeQuestion(next);
-    if (route.kind === "unknown") upsertCandidate(next, route);
-    navigate(`/search?q=${encodeURIComponent(next)}`);
+    navigate(next ? `/search?q=${encodeURIComponent(next)}` : "/search");
   }
 
   return (
