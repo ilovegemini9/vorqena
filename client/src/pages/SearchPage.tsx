@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Search } from "lucide-react";
 import { searchKnowledge } from "../data/knowledge";
+import { routeQuestion } from "../data/router";
+import { upsertCandidate } from "../data/candidates/store";
 import { searchTools } from "../data/vorqena";
 import "./SearchPage.css";
 
@@ -53,7 +55,14 @@ export default function SearchPage() {
 
   function submitSearch() {
     const next = value.trim();
-    navigate(next ? `/search?q=${encodeURIComponent(next)}` : "/search");
+    if (!next) {
+      navigate("/search");
+      return;
+    }
+
+    const route = routeQuestion(next);
+    if (route.kind === "unknown") upsertCandidate(next, route);
+    navigate(`/search?q=${encodeURIComponent(next)}`);
   }
 
   return (
@@ -115,9 +124,9 @@ export default function SearchPage() {
 
         {query && results.length === 0 && (
           <section className="search-v2-empty">
-            <span className="search-v2-tag">No exact match</span>
+            <span className="search-v2-tag">Question captured</span>
             <h2>We don't have a direct result for “{query}” yet.</h2>
-            <p>Try a more specific problem, calculation, decision, date, or cost question.</p>
+            <p>We saved this question for review. It is not published or indexed automatically.</p>
           </section>
         )}
 
