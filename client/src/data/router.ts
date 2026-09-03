@@ -29,7 +29,7 @@ function normalize(value: string) {
 
 function inferIntent(query: string): Intent | undefined {
   const value = normalize(query);
-  const scored = (Object.entries(intentHints) as [Intent, string][][]).map(([intent, hints]) => ({
+  const scored = (Object.entries(intentHints) as [Intent, string[]][]).map(([intent, hints]) => ({
     intent,
     score: hints.reduce((total, hint) => total + (value.includes(hint) ? (hint.includes(" ") ? 3 : 1) : 0), 0),
   })).sort((a, b) => b.score - a.score);
@@ -54,12 +54,8 @@ export function routeQuestion(query: string): QuestionRoute {
     const topScore = scoreKnowledgeMatch(value, top);
     const secondScore = second ? scoreKnowledgeMatch(value, second) : 0;
     const margin = topScore - secondScore;
-    if (topScore >= 90 && margin >= 20) {
-      return { kind: "knowledge", intent: top.intent, knowledge: top, confidence: "high" };
-    }
-    if (topScore >= 55 && margin >= 12) {
-      return { kind: "knowledge", intent: top.intent, knowledge: top, confidence: "medium" };
-    }
+    if (topScore >= 90 && margin >= 20) return { kind: "knowledge", intent: top.intent, knowledge: top, confidence: "high" };
+    if (topScore >= 55 && margin >= 12) return { kind: "knowledge", intent: top.intent, knowledge: top, confidence: "medium" };
   }
 
   const tools = searchTools(value);
