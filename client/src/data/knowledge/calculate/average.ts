@@ -6,7 +6,7 @@ export const average: KnowledgeRecord = {
   title: "Average",
   slug: "/calculate/average",
   aliases: ["average calculator", "mean", "calculate average", "average of numbers"],
-  answer: "The arithmetic average, or mean, is the sum of the values divided by how many values there are.",
+  answer: "The arithmetic average, or mean, is the sum of the values divided by how many values there are. For example, the average of 4, 6, and 8 is 18 divided by 3, which equals 6. When values have different importance, a weighted average may be more appropriate.",
   factors: ["All included values", "Number of values", "Whether a weighted average is actually required"],
   steps: ["Add all values together.", "Count how many values are included.", "Divide the sum by the count.", "If some values have different importance, use a weighted-average method instead of the simple mean."],
   warnings: ["A simple average can be misleading when values have very different weights or when the data contains extreme outliers."],
