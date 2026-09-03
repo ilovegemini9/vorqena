@@ -81,8 +81,8 @@ export function qualityIssues(item: KnowledgeRecord): QualityIssue[] {
 }
 
 export function qualityGate(records: KnowledgeRecord[]) {
-  const issues = records.flatMap(qualityIssues);
   const indexable = records.filter(item => item.seo.indexable);
+  const issues = indexable.flatMap(qualityIssues);
   const duplicateGroups = new Map<string, string[]>();
   const addDuplicateGroup = (kind: string, value: string, id: string) => {
     const key = `${kind}:${value}`;
