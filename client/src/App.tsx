@@ -5,6 +5,7 @@ import SearchPage from "./pages/SearchPage";
 import ToolPage from "./pages/ToolPage";
 import CanonicalPage from "./pages/CanonicalPage";
 import TrustPage from "./pages/TrustPage";
+import ReviewPage from "./pages/ReviewPage";
 import NotFound from "./pages/NotFound";
 import "./index.css";
 
@@ -12,6 +13,7 @@ export default function App() {
   return <Switch>
     <Route path="/" component={Home} />
     <Route path="/search" component={SearchPage} />
+    <Route path="/review" component={ReviewPage} />
     <Route path="/tool/:slug" component={ToolPage} />
     <Route path="/fix/:slug" component={CanonicalPage} />
     <Route path="/calculate/:slug" component={CanonicalPage} />
