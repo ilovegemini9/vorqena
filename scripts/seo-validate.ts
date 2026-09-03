@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { knowledge } from "../client/src/data/knowledge/index";
+import { qualityGate } from "../client/src/data/knowledge/quality";
 import { tools } from "../client/src/data/vorqena";
 
 const DIST = path.resolve("dist/public");
@@ -9,7 +10,6 @@ const SITE = "https://vorqena.vercel.app";
 if (!fs.existsSync(DIST)) throw new Error("dist/public does not exist. Run the Vite build first.");
 
 const errors: string[] = [];
-const warn = (message: string) => console.warn(`SEO WARN: ${message}`);
 const fail = (message: string) => errors.push(message);
 const routeOf = (slug: string) => (slug.startsWith("/") ? slug : `/${slug}`);
 
@@ -35,6 +35,11 @@ function title(html: string) {
 function canonical(html: string) {
   const match = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']*)/i);
   return match?.[1] ?? "";
+}
+
+const quality = qualityGate(knowledge);
+for (const issue of quality.issues) {
+  fail(`Knowledge quality: ${issue.id}.${issue.field} — ${issue.message}`);
 }
 
 const titles = new Map<string, string>();
@@ -100,7 +105,6 @@ else {
 }
 
 for (const item of knowledge.filter(k => k.seo.indexable)) {
-  if (!item.sources.length) warn(`${item.slug}: no sources attached`);
   for (const related of item.related) {
     const href = routeOf(related);
     const target = path.join(DIST, href.replace(/^\//, ""), "index.html");
@@ -114,4 +118,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`SEO validation passed: ${indexableRoutes.length} indexable routes checked, ${tools.length} tool routes checked.`);
+console.log(`SEO validation passed: ${indexableRoutes.length} indexable routes checked, ${tools.length} tool routes checked, knowledge quality gate passed.`);
