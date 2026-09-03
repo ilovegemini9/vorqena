@@ -12,6 +12,6 @@ export const percentage: KnowledgeRecord = {
   sources: [
     { label: "NIST — Guide to the SI, Chapter 7: Percentage and the symbol %", url: "https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-7-rules-and-style-conventions-expressing-values" },
   ],
-  related: [],
+  related: ["calculate/sales-tax", "calculate/average", "calculate/discount"],
   seo: { indexable: true, title: "Percentage Calculator: Percent, Increase & Change | Vorqena", description: "Calculate percentages, percentage change, increases, and decreases with clear inputs and formulas." }
 };
