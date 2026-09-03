@@ -1,5 +1,6 @@
 import type { QuestionRoute } from "../router";
-import type { CandidateRecord } from "./types";
+import { getKnowledge } from "../knowledge";
+import type { CandidateRecord, CandidateStatus } from "./types";
 
 const STORAGE_KEY = "vorqena:candidates:v1";
 
@@ -14,7 +15,6 @@ export function normalizeCandidateQuery(value: string) {
 
 function readCandidates(): CandidateRecord[] {
   if (typeof window === "undefined") return [];
-
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -27,11 +27,10 @@ function readCandidates(): CandidateRecord[] {
 
 function writeCandidates(records: CandidateRecord[]) {
   if (typeof window === "undefined") return;
-
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
   } catch {
-    // Candidate capture must never block answering a question.
+    // Candidate capture/review must never block answering a question.
   }
 }
 
@@ -44,10 +43,7 @@ export function getCandidates() {
   return readCandidates();
 }
 
-/**
- * Local prioritization only. This is intentionally not presented as global demand:
- * localStorage reflects demand from the current browser, not all Vorqena users.
- */
+/** Local prioritization only: localStorage is not global demand analytics. */
 export function candidatePriorityScore(candidate: CandidateRecord, now = Date.now()) {
   const ageDays = Math.max(0, (now - Date.parse(candidate.updatedAt)) / 86_400_000);
   const recency = Math.max(0, 30 - ageDays);
@@ -61,6 +57,54 @@ export function getPrioritizedCandidates() {
     .map(candidate => ({ candidate, priority: candidatePriorityScore(candidate) }))
     .sort((a, b) => b.priority - a.priority)
     .map(result => result.candidate);
+}
+
+function updateCandidate(id: string, update: Partial<CandidateRecord>) {
+  const records = readCandidates();
+  const existing = records.find(candidate => candidate.id === id);
+  if (!existing) return null;
+  const updated = { ...existing, ...update, updatedAt: new Date().toISOString() };
+  writeCandidates(records.map(candidate => candidate.id === id ? updated : candidate));
+  return updated;
+}
+
+export function matchCandidate(id: string, canonicalTopic: string) {
+  const topic = getKnowledge(canonicalTopic);
+  if (!topic) return null;
+  return updateCandidate(id, {
+    canonicalTopic: topic.slug,
+    intent: topic.intent,
+    status: "matched",
+  });
+}
+
+export function markNeedsResearch(id: string) {
+  return updateCandidate(id, { status: "needs-research" });
+}
+
+export function markReadyForReview(id: string) {
+  const candidate = readCandidates().find(item => item.id === id);
+  if (!candidate?.canonicalTopic || !getKnowledge(candidate.canonicalTopic)) return null;
+  return updateCandidate(id, { status: "ready-for-review" });
+}
+
+export function rejectCandidate(id: string) {
+  return updateCandidate(id, { status: "rejected" });
+}
+
+/**
+ * Publishing is deliberately explicit and only approves an existing canonical topic.
+ * It does not create a new SEO page or mutate the static knowledge registry.
+ */
+export function publishCandidate(id: string) {
+  const candidate = readCandidates().find(item => item.id === id);
+  const topic = candidate?.canonicalTopic ? getKnowledge(candidate.canonicalTopic) : undefined;
+  if (!candidate || candidate.status !== "ready-for-review" || !topic || !topic.seo.indexable) return null;
+  return updateCandidate(id, { status: "published" });
+}
+
+export function setCandidateStatus(id: string, status: CandidateStatus) {
+  return updateCandidate(id, { status });
 }
 
 export function upsertCandidate(query: string, route: QuestionRoute): CandidateRecord | null {
