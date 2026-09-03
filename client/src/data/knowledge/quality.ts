@@ -6,7 +6,7 @@ export type QualityIssue = {
   message: string;
 };
 
-const MIN_ANSWER_WORDS = 30;
+const MIN_ANSWER_WORDS = 20;
 const MIN_ALIASES = 2;
 const MIN_RELATED = 1;
 const MIN_SOURCE_COUNT = 1;
