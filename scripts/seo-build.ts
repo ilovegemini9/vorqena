@@ -24,6 +24,33 @@ const duplicateToolToKnowledge: Record<string, string> = {
   "repair-or-replace": "/decide/repair-or-replace",
 };
 
+const homeIntents = [
+  ["fix", "Fix", "Solve problems and get step-by-step guidance."],
+  ["calculate", "Calculate", "Crunch numbers instantly with smart calculators."],
+  ["decide", "Decide", "Get clarity on choices with pros, cons, and recommendations."],
+  ["when", "When", "Find dates, deadlines, and the right time for important things."],
+  ["cost", "Cost", "See estimated costs and compare your options."],
+] as const;
+
+const homePopular = [
+  ["My laptop won't turn on", "fix"],
+  ["I can't log into my account", "fix"],
+  ["How much does it cost to replace a water heater?", "cost"],
+  ["Can I drive with a check engine light on?", "decide"],
+  ["How many days until Christmas?", "when"],
+  ["20% of 450", "calculate"],
+  ["Can I freeze cooked chicken?", "decide"],
+  ["Repair or replace my washing machine?", "decide"],
+  ["What is my monthly mortgage payment?", "calculate"],
+] as const;
+
+const homeExamples = [
+  ["My phone is not charging", "phone not charging"],
+  ["How much tip should I leave?", "tip"],
+  ["Can I freeze cooked rice?", "can i freeze cooked rice"],
+  ["When is Thanksgiving 2026?", "when is thanksgiving 2026"],
+] as const;
+
 function escapeHtml(value: string) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 }
@@ -42,6 +69,14 @@ function knowledgeContent(item: (typeof knowledge)[number]) {
   const related = item.related.length ? `<section class="canonical-related"><span class="eyebrow">Related questions</span><div class="related-grid">${item.related.map(url => { const href = absoluteRoute(url); return `<a href="${href}"><span>${escapeHtml(href.split("/").pop()?.replaceAll("-", " ") ?? href)}</span><span aria-hidden="true">→</span></a>`; }).join("")}</div></section>` : "";
   return `<main class="page-shell"><header class="site-header"><a href="/" class="brand"><span class="brand-mark">V</span><span>Vorqena</span></a><nav class="desktop-nav"><a href="/fix">Fix</a><a href="/calculate">Calculate</a><a href="/decide">Decide</a><a href="/when">When</a><a href="/cost">Cost</a></nav><a href="/search" class="header-cta"><span aria-hidden="true">⌕</span> Search</a></header><article class="content-wrap canonical-page"><a href="/${item.intent}" class="back-link">← ${escapeHtml(item.intent)}</a><span class="eyebrow">Vorqena answer</span><h1>${escapeHtml(item.title)}</h1><p class="canonical-intro">${escapeHtml(item.seo.description)}</p><section class="knowledge-answer canonical-answer"><span class="answer-label">Direct answer</span><h2>${escapeHtml(item.answer)}</h2></section>${unordered("Common causes", item.causes)}${unordered("What affects the answer", item.factors)}${ordered}${warnings}${unordered("When to get help", item.whenToGetHelp)}${unordered("Cost considerations", item.cost)}${sources}${related}</article><footer class="site-footer"><span>Vorqena — Everyday answers, tools &amp; decisions.</span><span><a href="/about">About</a> · <a href="/sources">Sources</a> · <a href="/editorial-policy">Editorial policy</a> · <a href="/contact">Contact</a></span><span>© 2026</span></footer></main>`;
 }
+
+function homepageContent() {
+  const intentCards = homeIntents.map(([slug, title, description]) => `<a href="/${slug}" class="dark-intent-card"><div class="intent-icon"><span aria-hidden="true">${title.slice(0, 1)}</span></div><h2>${escapeHtml(title)}</h2><p>${escapeHtml(description)}</p><span class="round-arrow" aria-hidden="true">→</span></a>`).join("");
+  const exampleLinks = homeExamples.map(([label, query]) => `<a href="/search?q=${encodeURIComponent(query)}">${escapeHtml(label)}</a>`).join("");
+  const popularLinks = homePopular.map(([query]) => `<a href="/search?q=${encodeURIComponent(query)}"><span>${escapeHtml(query)}</span><span class="popular-arrow" aria-hidden="true">→</span></a>`).join("");
+  return `<main class="app-shell"><aside class="sidebar"><a href="/" class="side-brand"><span>V</span><span>Vorqena</span></a><nav class="side-nav"><a href="/" class="side-link active">Home</a><a href="/fix" class="side-link">Fix</a><a href="/calculate" class="side-link">Calculate</a><a href="/decide" class="side-link">Decide</a><a href="/when" class="side-link">When</a><a href="/cost" class="side-link">Cost</a></nav><div class="side-note"><strong>Save time.<br/>Get answers.<br/>Get things done.</strong><span>Vorqena turns questions into answers and action.</span></div></aside><section class="main-stage"><header class="topbar"><div class="mobile-brand">Vorqena</div><a class="examples-btn" href="#popular">Examples</a></header><section class="hero-dark"><span class="hero-mark" aria-hidden="true">V</span><h1>What can we <span>help you</span> with?</h1><p>Describe a problem, ask a question, or calculate something.</p><form class="ask-box" action="/search" method="get"><span aria-hidden="true">⌕</span><input name="q" placeholder="Ask anything..." aria-label="Ask anything"/><button type="submit" aria-label="Search">→</button></form><div class="query-chips">${exampleLinks}</div></section><section class="intent-cards">${intentCards}</section><section class="popular-box" id="popular"><div class="popular-head"><h2>Popular right now</h2><a href="/search">View all →</a></div><div class="popular-grid">${popularLinks}</div></section><section class="trust-row"><div><span><strong>Trusted &amp; Reliable</strong><small>Answers backed by sources you can trust.</small></span></div><div><span><strong>Smart Understanding</strong><small>Vorqena understands your question, not just keywords.</small></span></div><div><span><strong>Fast &amp; Accurate</strong><small>Get the right answer and next steps, instantly.</small></span></div><div><span><strong>Private &amp; Secure</strong><small>Your questions are private. We respect your data.</small></span></div></section></section></main>`;
+}
+
 function hubContent(intent: Intent) {
   const items = knowledge.filter(item => item.intent === intent && item.seo.indexable);
   const itemLinks = items.map(item => `<li><a href="${absoluteRoute(item.slug)}"><strong>${escapeHtml(item.title)}</strong> — ${escapeHtml(item.seo.description)}</a></li>`).join("");
@@ -59,7 +94,7 @@ const homepageJsonLd = [
   { "@context": "https://schema.org", "@type": "WebSite", "@id": `${SITE}/#website`, name: "Vorqena", url: `${SITE}/`, description: "Everyday answers, tools, and decisions.", publisher: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Vorqena", url: SITE, logo: { "@type": "ImageObject", url: `${SITE}/favicon.svg` } } },
   { "@context": "https://schema.org", "@type": "WebApplication", "@id": `${SITE}/#application`, name: "Vorqena", url: `${SITE}/`, applicationCategory: "UtilitiesApplication", operatingSystem: "Web", description: "Everyday answers, calculators, decisions, dates, and cost estimates.", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
 ];
-const home = withRootContent(setMeta(shell, "Vorqena — Everyday Answers, Tools & Decisions", "Vorqena helps you fix everyday problems, calculate answers, make decisions, find dates, and estimate costs.", `${SITE}/`), `<main><h1>Everyday answers, tools &amp; decisions</h1><p>Vorqena turns practical questions into direct answers, focused tools, and useful next steps.</p></main>`).replace("</head>", `<script type="application/ld+json">${JSON.stringify(homepageJsonLd)}</script></head>`);
+const home = withRootContent(setMeta(shell, "Vorqena — Everyday Answers, Tools & Decisions", "Vorqena helps you fix everyday problems, calculate answers, make decisions, find dates, and estimate costs.", `${SITE}/`), homepageContent()).replace("</head>", `<script type="application/ld+json">${JSON.stringify(homepageJsonLd)}</script></head>`);
 fs.writeFileSync(SHELL_PATH, home, "utf8");
 
 const indexableRoutes = new Set<string>(["/"]);
