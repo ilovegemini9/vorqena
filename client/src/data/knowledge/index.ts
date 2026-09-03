@@ -5,6 +5,12 @@ import { wifiNotWorking } from "./fix/wifi-not-working";
 import { laptopWontTurnOn } from "./fix/laptop-wont-turn-on";
 import { washingMachineNotDraining } from "./fix/washing-machine-not-draining";
 import { carWontStart } from "./fix/car-wont-start";
+import { refrigeratorNotCooling } from "./fix/refrigerator-not-cooling";
+import { dishwasherNotDraining } from "./fix/dishwasher-not-draining";
+import { ovenNotHeating } from "./fix/oven-not-heating";
+import { tvNoSignal } from "./fix/tv-no-signal";
+import { printerNotPrinting } from "./fix/printer-not-printing";
+import { bluetoothNotConnecting } from "./fix/bluetooth-not-connecting";
 import { fuelCost } from "./cost/fuel-cost";
 import { electricityCost } from "./cost/electricity-cost";
 import { carTripCost } from "./cost/car-trip-cost";
@@ -16,8 +22,11 @@ import { percentage } from "./calculate/percentage";
 import { salesTax } from "./calculate/sales-tax";
 import { average } from "./calculate/average";
 import { unitPrice } from "./calculate/unit-price";
+import { tip } from "./calculate/tip";
+import { discount } from "./calculate/discount";
 import { changeCarOil } from "./when/change-car-oil";
 import { replaceAirFilter } from "./when/replace-air-filter";
+import { changeSmokeAlarmBattery } from "./when/change-smoke-alarm-battery";
 
 export type { Intent, KnowledgeRecord, Source } from "./types";
 
@@ -28,6 +37,12 @@ export const knowledge: KnowledgeRecord[] = [
   laptopWontTurnOn,
   washingMachineNotDraining,
   carWontStart,
+  refrigeratorNotCooling,
+  dishwasherNotDraining,
+  ovenNotHeating,
+  tvNoSignal,
+  printerNotPrinting,
+  bluetoothNotConnecting,
   fuelCost,
   electricityCost,
   carTripCost,
@@ -39,8 +54,11 @@ export const knowledge: KnowledgeRecord[] = [
   salesTax,
   average,
   unitPrice,
+  tip,
+  discount,
   changeCarOil,
   replaceAirFilter,
+  changeSmokeAlarmBattery,
 ];
 
 export function getKnowledge(idOrSlug: string) {
