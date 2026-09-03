@@ -6,7 +6,7 @@ export const changeSmokeAlarmBattery: KnowledgeRecord = {
   title: "When to Change a Smoke Alarm Battery",
   slug: "/when/change-smoke-alarm-battery",
   aliases: ["when to replace smoke alarm battery", "smoke detector battery change", "how often change smoke alarm battery", "smoke alarm chirping"],
-  answer: "Follow the alarm manufacturer's instructions and replace replaceable batteries on the schedule it specifies; many alarms use an annual battery-change reminder. A chirping alarm can indicate a low battery, but it can also signal another condition, so check the manual rather than assuming.",
+  answer: "Follow the alarm manufacturer's instructions and replace the battery on the schedule it specifies; many alarms use an annual battery-change reminder. A chirping alarm can indicate a low battery, but it can also signal another condition, so check the manual rather than assuming.",
   factors: [
     "Whether the alarm uses replaceable batteries or a sealed long-life battery",
     "The manufacturer's recommended replacement interval",
